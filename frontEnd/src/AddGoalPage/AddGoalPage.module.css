@@ -1,0 +1,33 @@
+.form {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 2rem;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 2vh;
+    background-color: #222;
+    padding: 1vw;
+}
+
+.form > label > input, .form > label > textarea {
+    border: 2px solid white;
+    background-color: #222;
+    color: white;
+}
+
+.form > label > textarea {
+    font-size: 1.7rem;
+}
+
+.form > label > input {
+    font-size: 2rem;
+}
+
+.form > label {
+    gap: 1vw;
+    display: flex;
+    align-items: center;
+}

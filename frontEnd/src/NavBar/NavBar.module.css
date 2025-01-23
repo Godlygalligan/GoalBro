@@ -1,0 +1,29 @@
+.nav {
+    position: absolute;
+    top: 1.25vh;
+    height: var(--topBarHeight);
+    display: flex;
+    width: 90vw;
+    left: 5vw;
+    align-items: center;
+    justify-content: center;
+    gap: 5vw;
+    background-color: black;
+    
+}
+
+.nav > div {
+    cursor: pointer;
+    color: grey;
+    font-size: 2rem;
+}
+
+.nav > div:hover {
+    color: white;
+}
+
+.nav > .current {
+    color: white;
+    text-decoration: underline;
+}
+

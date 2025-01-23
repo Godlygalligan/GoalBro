@@ -1,0 +1,20 @@
+.ctn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.addGoal {
+    cursor: pointer;
+    font-size: 2rem;
+    background-color: #aaa;
+    width: fit-content;
+    padding: 1vw;
+    border-radius: 5px;
+    color: black;
+}
+
+.addGoal:hover {
+    background-color: #ddd;
+}
