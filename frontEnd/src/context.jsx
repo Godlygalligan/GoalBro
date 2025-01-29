@@ -56,7 +56,6 @@ export const GoalsProvider = ({ children }) => {
 
             const dataInCamelCase = convertDataKeysToCamelCase(data)
 
-            console.log(dataInCamelCase);
             setCategories(dataInCamelCase.categories)
         }
 
@@ -82,8 +81,6 @@ export const GoalsProvider = ({ children }) => {
 
             const dataInCamelCase = convertDataKeysToCamelCase(data)
 
-            console.log(dataInCamelCase)
-            
             return dataInCamelCase.goals || dataInCamelCase.goal
         } catch (error) {
             return error
@@ -115,7 +112,6 @@ export const GoalsProvider = ({ children }) => {
             return "Success";
 
         } catch (error) {
-            console.log(error)
             return error
         }
         }
