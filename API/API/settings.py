@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'GoalBro',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,7 +50,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'myproject.urls'
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_HTTPONLY = False
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5174',  # Add your React app's origin here
+    'http://127.0.0.1:5174',  # Include other potential URLs
+]
+
+ROOT_URLCONF = 'GoalBro.urls'
 
 TEMPLATES = [
     {
@@ -67,7 +76,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'myproject.wsgi.application'
+WSGI_APPLICATION = 'API.wsgi.application'
+
+AUTH_USER_MODEL = 'GoalBro.User'
 
 
 # Database

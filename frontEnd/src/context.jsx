@@ -1,67 +1,299 @@
-import { createContext, useState } from "react"
+import { createContext, useEffect, useState } from "react"
+
+const getError = async (data) => {
+    const parsedData = await data.json()
+    return parsedData.error 
+}
+
+const convertToCamelCase = (snakeStr) => {
+    return snakeStr.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+};
+
+const convertDataKeysToCamelCase = (data) => {
+    if (Array.isArray(data)) {
+        // If data is an array, map over its elements
+        return data.map(convertDataKeysToCamelCase);
+    } else if (data !== null && typeof data === "object") {
+        // If data is an object, create a new object with camelCase keys
+        const newData = {};
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                const camelCaseKey = convertToCamelCase(key); // Convert key to camelCase
+                newData[camelCaseKey] = convertDataKeysToCamelCase(data[key]); // Recursively process the value
+            }
+        }
+        return newData;
+    }
+    return data;
+};
+
+
+
+import Cookies from 'js-cookie';
+
+const getCSRFToken = () => {
+    return Cookies.get('csrftoken');  // 'csrftoken' should match Django's cookie name
+};
 
 export const GoalsContext = createContext(undefined)
 
 export const GoalsProvider = ({ children }) => {
-    const [ goals,setGoals ] = useState([{
-        id: 1,
-        name: "Bench press 100KG",
-        description: "I want to be able to bench press 100kg",
-        currentProgress: 90,
-        goalAmount: 100,
-        lastUpdated: Date.now()
-    },
-    {
-        id: 2,
-        name: "Achieve 3 CS50 ceritficates",
-        description: "I wish to complete CS50X, CS50 Python and CS50 Web",
-        currentProgress: 2,
-        goalAmount: 3,
-        lastUpdated: Date.now()
-    },
-    {
-        id: 3,
-        name: "Hit 500 followers on twitch",
-        description: "I want to have entertained 500 people enough to have followed me!",
-        currentProgress: 355,
-        goalAmount: 500,
-        lastUpdated: Date.now()
-    }, 
-    {
-        id: 4,
-        name: "Get a beautiful girlfriend",
-        description: "I want a beautiful, kind, loving girlfriend who i will cherish and treat well",
-        currentProgress: 1,
-        goalAmount: 1,
-        lastUpdated: new Date(2024, 1, 12)
-    }])
 
+    const [ categories, setCategories ] = useState([])
     const checkCompletion = (goal) => {
-        return goal.currentProgress >= goal.goalAmount
+        return goal.currentProgress >= goal.goalAmount && goal.closed
     }
 
-    const addGoal = (data) => {
-        setGoals(prev => [...prev, {
-            id: goals.length + 1,
-            name: data.name,
-            description: data.description,
-            currentProgress: parseInt(data.currentProgress),
-            goalAmount: parseInt(data.goalAmount),
-            lastUpdated: Date.now()
-        }])
+    useEffect(() => {
+        const getCategories = async () => {
+            const response = await fetch("/api/categories")
+
+            if (!response.ok) {
+                throw new Error(getError(response))
+            }
+
+            const data = await response.json()
+
+            const dataInCamelCase = convertDataKeysToCamelCase(data)
+
+            console.log(dataInCamelCase);
+            setCategories(dataInCamelCase.categories)
+        }
+
+        getCategories();
+
+    }, [])
+
+    const fetchGoals = async (type) => {
+        const allowedTypes = ["current","closed"];
+
+        if (!allowedTypes.includes(type) && !typeof type === "number") {
+            return "Invalid type"
+        }
+
+        try {
+            const response = await fetch(`/api/goals?type=${type}`)
+
+            if (!response.ok) {
+                throw new Error(getError(response))
+            }
+
+            const data = await response.json()
+
+            const dataInCamelCase = convertDataKeysToCamelCase(data)
+
+            console.log(dataInCamelCase)
+            
+            return dataInCamelCase.goals || dataInCamelCase.goal
+        } catch (error) {
+            return error
+        }
+    }
+
+
+    const addGoal = async (data) => {
+        try {
+            const response = await fetch("/api/add-goal", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                }, 
+                body: JSON.stringify({
+                    name: data.name,
+                    description: data.description,
+                    currentProgress: parseInt(data.currentProgress),
+                    goalAmount: parseInt(data.goalAmount),
+                    category: data.category
+                }), credentials: "include"
+            })
+            
+            if (!response.ok) {
+                throw new Error(await getError(response))
+            }
+
+            return "Success";
+
+        } catch (error) {
+            console.log(error)
+            return error
+        }
+        }
+    
+
+    const updateAmount = async (id, type, amount) => {
+        if (!id || isNaN(id)) {
+            return "Invalid Goal Id";
+        }
+
+        try {
+            const response = await fetch("/api/update-goal", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                }, body: JSON.stringify({
+                    "id": id,
+                    "type": type,
+                    "amount": amount
+                }),
+                credentials: "include"
+            }) 
+
+            if (!response.ok) {
+                throw new Error(await getError(response))
+            }
+
+            return "Success"
+        } catch (error) {
+            return error
+        }
+    }
+
+    const giveUp = async (id) => {
+        try {
+            const response = await fetch(`/api/close-goal`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                }, body: JSON.stringify({"id":id})
+                , credentials: "include"
+            })
+
+            if (!response.ok) {
+                throw new Error(getError(response))
+            }
+
+            return "Success"
+        } catch (error) {
+            return error
+        }
     }
 
     return (
-        <GoalsContext.Provider value={{ goals, setGoals, checkCompletion, addGoal }}>
+        <GoalsContext.Provider value={{ categories, fetchGoals, checkCompletion, addGoal, updateAmount, giveUp }}>
             { children }
         </GoalsContext.Provider>)
+} 
+
+export const UserContext = createContext(undefined)
+
+export const UserProvider = ({ children }) => {
+    const [user,setUser] = useState(null)
+
+    const getUser = async () => {
+        try {
+            const response = await fetch("/api/get-user", {
+                method: "GET"
+            });
+            
+            if (!response.ok) {
+                throw new Error(await getError(response));
+            }
+            const data = await response.json();
+            const dataInCamelCase = convertDataKeysToCamelCase(data)
+            setUser(dataInCamelCase.user);
+        } catch (error) {
+            return;
+        }
+    } 
+
+    useEffect(() => {
+        if (!user) {
+            getUser();
+        }
+    }, [])
+
+    const login = async (username, password, permanent) => {
+        try {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({"username": username, "password": password, "permanent": permanent}),
+                credentials: "include"
+            })
+
+            if (!response.ok) {
+                throw new Error(await getError(response))
+            }
+
+            await getUser();
+            return "Success";
+        } catch (error) {
+            return error;
+        }
+    }
+
+    const register = async (email, username, password, confirmation, permanent) => {
+        try {
+            if (!email || !username || !password || !confirmation ) {
+                return "Please fill all fields in the form"
+            }
+
+            if (confirmation !== password) {
+                return "Passwords do not match";
+            }
+
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({"email": email, "username": username, "password": password, "permanent": permanent}),
+                credentials: "include"
+            })
+
+            if (!response.ok) {
+                throw new Error(await getError(response))
+            }
+
+            await getUser();
+            return "Success";
+        } catch (error) {
+            return error;
+        }
+    }
+
+    const logout = async () => {
+        try {
+            const response = await fetch("/api/logout", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCSRFToken()
+                }, credentials: "include"
+            });
+
+            if (!response.ok) {
+                throw new Error(await getError(response))
+            }
+
+            setUser(null);
+
+            return "Success";
+
+        } catch (error) {
+            return error;
+        } 
+    }
+
+    return (
+        <UserContext.Provider value={{ user, login, logout, register, getUser }}>
+            { children }
+        </UserContext.Provider>
+    )
 } 
 
 
 
 export const AppProvider = ({ children }) => (
+    <UserProvider>
     <GoalsProvider>
         { children }
     </GoalsProvider>
-
+    </UserProvider>
 )

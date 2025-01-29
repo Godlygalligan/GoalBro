@@ -27,3 +27,56 @@
     text-decoration: underline;
 }
 
+.nav > .logout {
+    font-size: 1.5rem;
+    justify-self: start;
+    position: absolute;
+    right: 1vw;
+}
+
+.nav > .username {
+    position: absolute;
+    left: 1vw;
+    font-size: 1.5rem;
+    cursor: default;
+}
+
+.nav > .username:hover {
+    color: grey;
+}
+
+.white {
+    color: white !important;
+}
+
+@media screen and (max-width: 950px) {
+    .nav > div {
+        font-size: 1.7rem;
+    }
+}
+
+@media screen and (max-width: 635px) {
+    .nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .nav > .logout {
+        justify-self: auto;
+    }
+
+    .username, .logout {
+        position: relative !important;
+    }
+}
+
+
+@media screen and (max-width: 540px) {
+    .nav {
+        left: 0;
+        width: 100vw;
+    }
+}

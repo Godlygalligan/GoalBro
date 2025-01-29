@@ -5,6 +5,7 @@
     background-color: #222;
     padding: 1vw;
     max-width: 70vw;
+    min-width: 70vw;
 }
 
 .title {
@@ -20,4 +21,15 @@
     margin-top: 2vh;
     color: grey;
     font-size: 2rem;
+}
+
+@media screen and (max-width: 540px) {
+    .ctn {
+        max-width: 100%;
+        min-width: 100%;
+    }
+
+    .title {
+        font-size: 2.5rem;
+    }
 }

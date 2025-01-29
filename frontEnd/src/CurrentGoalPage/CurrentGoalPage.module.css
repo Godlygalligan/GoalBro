@@ -11,6 +11,7 @@
     background-color: #aaa;
     width: fit-content;
     padding: 1vw;
+    margin-bottom: 5vh;
     border-radius: 5px;
     color: black;
 }
@@ -18,3 +19,29 @@
 .addGoal:hover {
     background-color: #ddd;
 }
+
+.categories {
+    position: absolute;
+    left: 1vw;
+    top: 1vh;
+    width: auto;
+    height: 5vh;
+    color: white;
+    text-align: center;
+    background-color: #333;
+    border: 1px solid black;
+}
+
+@media screen and (max-width: 635px) {
+    .ctn {
+        padding-top: 7vh;
+    }
+
+    .categories {
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.2rem;
+
+    }
+}
+

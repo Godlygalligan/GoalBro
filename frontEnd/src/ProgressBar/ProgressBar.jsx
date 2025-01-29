@@ -1,12 +1,14 @@
 import React from "react";
 
-const ProgressBar = ({ goalAmount, currentProgress }) => {
+const ProgressBar = ({ goalAmount, currentProgress, closed }) => {
 
     const percentage = (currentProgress / goalAmount) * 100
 
+    const failed = closed ? currentProgress < goalAmount : false
+
     const containerStyle = {
-        width: "90%",
-        marginLeft: "5%",
+        width: "95%",
+        marginLeft: "2.5%",
         backgroundColor: "#e0e0df",
         borderRadius: "50px",
         overflow: "hidden",
@@ -15,8 +17,8 @@ const ProgressBar = ({ goalAmount, currentProgress }) => {
     const fillerStyle = {
         height: "20px",
         width: `${percentage}%`,
-        backgroundColor: "#4caf50",
-        textAlign: "right",
+        backgroundColor: !failed ? "#4caf50" : "red",
+        textAlign: "start",
         borderRadius: "inherit",
         transition: "width 0.5s ease-in-out",
     };

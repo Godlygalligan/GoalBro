@@ -1,0 +1,16 @@
+.error {
+    text-align: center;
+    color: #ac0101;
+    font-size: 1.5rem;
+    width: 100%;
+}
+
+@media screen and (max-width: 425px) {
+    .error {
+        font-size: 1rem;
+    }
+    
+    .long {
+        font-size: 0.7rem;
+    }
+}

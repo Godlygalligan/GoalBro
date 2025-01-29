@@ -1,0 +1,109 @@
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+    margin-top: 1vh;
+}
+
+.button {
+    background-color: #222;
+    width: fit-content;
+    height: auto;
+    padding: 0 1vw;
+    border: 2px solid white;
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #444;
+}
+.ctn {
+    font-size: 3rem;
+    border: 2px solid black;
+    position: relative;
+    background-color: #222;
+    padding: 1vw;
+    overflow-y: auto;
+    padding-top: 10vh;
+    height: 100%;
+    width: 100%;
+}
+
+.title {
+    font-size: 3rem;
+}
+
+.description {
+    font-size: 2rem;
+    padding: 1vw;
+}
+
+.updated {
+    margin-top: 2vh;
+    color: grey;
+    font-size: 2rem;
+}
+
+.back {
+    position: absolute;
+    top: 1vh;
+}
+
+.note {
+    font-size: 1rem;
+    color: grey;
+}
+
+.group {
+    display: inline-block;
+
+}
+
+.group > button {
+    color: white;
+    background-color: #222;
+    margin-left: 20px;
+    font-size: 1.3rem;
+}
+
+.group > input {
+    font-size: 1.2rem;
+}
+
+.red {
+    color: red;
+    border-color: red;
+}
+
+.red:hover {
+    background-color: hsl(0, 100%, 30%);
+}
+
+.updates {
+    max-height: 30vh;
+    overflow-y: auto;
+    border: 1px solid #333;
+}
+
+@media screen and (max-width: 635px) {
+    .updates {
+        font-size: 2rem;
+    }
+
+    .group > button {
+        font-size: 1.3rem;
+    }
+
+    .group > input {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .updates {
+        font-size: 1.7rem;
+    }
+
+}

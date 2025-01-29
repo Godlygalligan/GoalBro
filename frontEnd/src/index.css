@@ -7,3 +7,29 @@ body {
 :root {
     --topBarHeight: 10vh;
 }
+ 
+
+body div::-webkit-scrollbar {
+    width: 6px; 
+  }
+  
+body div::-webkit-scrollbar-track {
+    background: transparent;  
+    border-radius: 10px;   
+  }
+  
+body div::-webkit-scrollbar-thumb {
+    background: #444;   
+    border-radius: 10px;
+  }
+  
+body div::-webkit-scrollbar-thumb:hover {
+    background: #555;    
+  }
+
+@media screen and (max-width: 635px) {
+  :root {
+    --topBarHeight: 20vh;
+  }
+}
+
